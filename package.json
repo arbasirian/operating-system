@@ -1,0 +1,11 @@
+{
+  "name": "operating-system",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "author": "Armin Basirian",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "typescript": "^4.6.2"
+  }
+}
