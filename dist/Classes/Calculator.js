@@ -33,7 +33,7 @@ var Calculator = /** @class */ (function () {
             return 1;
         return 0;
     };
-    Calculator.prototype.seprateBlocks = function (input, level) {
+    Calculator.prototype.separateBlocks = function (input, level) {
         if (level === 0)
             return [];
         if (level === 1)
@@ -56,24 +56,55 @@ var Calculator = /** @class */ (function () {
                 return current;
         }
     };
+    Calculator.prototype.newWay = function (userINput) {
+        var blocks = userINput.split("");
+        console.log("blocks", blocks);
+        var _loop_1 = function () {
+            var newBlocks = [];
+            var higher = blocks.findIndex(function (item) { return item === "*" || item === "/"; });
+            var lower = blocks.findIndex(function (item) { return item === "+" || item === "-"; });
+            var findIndex = higher > 0 ? higher : lower;
+            console.log(findIndex);
+            var blockValue = this_1.calculation(blocks[findIndex], +blocks[findIndex - 1], +blocks[findIndex + 1]);
+            blocks.forEach(function (item, index) {
+                if (index === findIndex - 1 || index === findIndex + 1)
+                    return;
+                if (index === findIndex)
+                    return newBlocks.push(blockValue);
+                newBlocks.push(item);
+            });
+            console.log(newBlocks);
+            blocks = newBlocks;
+        };
+        var this_1 = this;
+        while (blocks.length > 1) {
+            _loop_1();
+        }
+        console.log("blocks", blocks);
+        return blocks;
+    };
     Calculator.prototype.calculate = function (userInput) {
-        var _this = this;
         var cleanInput = this.cleanUserInput(userInput);
-        var pLevel = this.priorityLevel(userInput);
-        var blocks = this.seprateBlocks(userInput, pLevel);
-        var parts = userInput.split(" ");
-        var calculatedValue = 0;
-        var currentOperations = null;
-        parts.forEach(function (item, index) {
-            if (index === 0 && !_this.operations.has(item)) {
-                return (calculatedValue = parseFloat(item));
-            }
-            if (_this.operations.has(item)) {
-                return (currentOperations = item);
-            }
-            calculatedValue = _this.calculation(currentOperations, calculatedValue, parseFloat(item));
-        });
-        return calculatedValue;
+        var newData = this.newWay(cleanInput);
+        // const pLevel = this.priorityLevel(userInput);
+        // const blocks = this.separateBlocks(userInput, pLevel);
+        // const parts = userInput.split(" ");
+        // let calculatedValue = 0;
+        // let currentOperations = null;
+        // parts.forEach((item, index) => {
+        //   if (index === 0 && !this.operations.has(item)) {
+        //     return (calculatedValue = parseFloat(item));
+        //   }
+        //   if (this.operations.has(item)) {
+        //     return (currentOperations = item);
+        //   }
+        //   calculatedValue = this.calculation(
+        //     currentOperations,
+        //     calculatedValue,
+        //     parseFloat(item)
+        //   );
+        // });
+        return newData[0];
     };
     return Calculator;
 }());

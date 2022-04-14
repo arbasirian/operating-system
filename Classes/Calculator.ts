@@ -33,7 +33,7 @@ class Calculator {
     return 0;
   }
 
-  private seprateBlocks(input: string, level: number) {
+  private separateBlocks(input: string, level: number) {
     if (level === 0) return [];
     if (level === 1) input.split("+");
   }
@@ -56,30 +56,57 @@ class Calculator {
     }
   }
 
+  private newWay(userINput: string) {
+    var blocks = userINput.split("");
+
+    while (blocks.length > 1) {
+      const newBlocks = [];
+      const higher = blocks.findIndex((item) => item === "*" || item === "/");
+      const lower = blocks.findIndex((item) => item === "+" || item === "-");
+      const findIndex = higher > 0 ? higher : lower;
+
+      const blockValue = this.calculation(
+        blocks[findIndex],
+        +blocks[findIndex - 1],
+        +blocks[findIndex + 1]
+      );
+      blocks.forEach((item, index) => {
+        if (index === findIndex - 1 || index === findIndex + 1) return;
+        if (index === findIndex) return newBlocks.push(blockValue);
+        newBlocks.push(item);
+      });
+
+      blocks = newBlocks;
+    }
+
+    return blocks;
+  }
+
   public calculate(userInput: string) {
     const cleanInput = this.cleanUserInput(userInput);
-    const pLevel = this.priorityLevel(userInput);
-    const blocks = this.seprateBlocks(userInput, pLevel);
+    const newData = this.newWay(cleanInput);
+    // const pLevel = this.priorityLevel(userInput);
+    // const blocks = this.separateBlocks(userInput, pLevel);
 
-    const parts = userInput.split(" ");
-    let calculatedValue = 0;
-    let currentOperations = null;
+    // const parts = userInput.split(" ");
+    // let calculatedValue = 0;
+    // let currentOperations = null;
 
-    parts.forEach((item, index) => {
-      if (index === 0 && !this.operations.has(item)) {
-        return (calculatedValue = parseFloat(item));
-      }
-      if (this.operations.has(item)) {
-        return (currentOperations = item);
-      }
-      calculatedValue = this.calculation(
-        currentOperations,
-        calculatedValue,
-        parseFloat(item)
-      );
-    });
+    // parts.forEach((item, index) => {
+    //   if (index === 0 && !this.operations.has(item)) {
+    //     return (calculatedValue = parseFloat(item));
+    //   }
+    //   if (this.operations.has(item)) {
+    //     return (currentOperations = item);
+    //   }
+    //   calculatedValue = this.calculation(
+    //     currentOperations,
+    //     calculatedValue,
+    //     parseFloat(item)
+    //   );
+    // });
 
-    return calculatedValue;
+    return newData[0];
   }
 }
 
