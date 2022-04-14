@@ -4,6 +4,10 @@
   "main": "index.ts",
   "author": "Armin Basirian",
   "license": "MIT",
+  "scripts": {
+    "compile": "tsc",
+    "start": "tsc && node dist/index"
+  },
   "devDependencies": {
     "@types/node": "^17.0.21",
     "typescript": "^4.6.2"
