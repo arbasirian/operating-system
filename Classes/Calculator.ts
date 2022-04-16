@@ -41,6 +41,12 @@ class Calculator {
     return input.split(/\+|\*|\-|\//g);
   }
 
+  private isOperations(input: string) {
+    if (input === "+" || input === "-" || input === "*" || input === "/")
+      return true;
+    return false;
+  }
+
   private calculation(op: string, current: number, newNumber: number) {
     switch (op) {
       case "+":
@@ -82,29 +88,43 @@ class Calculator {
     return blocks;
   }
 
+  private newWay2(input: string) {
+    const newBlocks = new Map<string, { type: string; value: string }>();
+    const list = input.split("");
+    list.forEach((item, index) => {
+      const [latestBlocks] = [...newBlocks.values()].reverse();
+      const [latestBlocksKey] = [...newBlocks.keys()].reverse();
+
+      console.log("first", latestBlocks, latestBlocksKey, item, index);
+      if (this.isOperations(item)) {
+        newBlocks.set("op_" + index, { type: "op", value: item });
+        return;
+      }
+      if (latestBlocks?.type === "op") {
+        return newBlocks.set("numBlock_" + index, {
+          type: "numBlock",
+          value: item,
+        });
+      }
+      if (latestBlocks?.type === "numBlock") {
+        return newBlocks.set(latestBlocksKey, {
+          type: "numBlock",
+          value: latestBlocks.value + item,
+        });
+      }
+      return newBlocks.set("numBlock_" + index, {
+        type: "numBlock",
+        value: item,
+      });
+    });
+
+    return newBlocks;
+  }
+
   public calculate(userInput: string) {
     const cleanInput = this.cleanUserInput(userInput);
     const newData = this.newWay(cleanInput);
-    // const pLevel = this.priorityLevel(userInput);
-    // const blocks = this.separateBlocks(userInput, pLevel);
-
-    // const parts = userInput.split(" ");
-    // let calculatedValue = 0;
-    // let currentOperations = null;
-
-    // parts.forEach((item, index) => {
-    //   if (index === 0 && !this.operations.has(item)) {
-    //     return (calculatedValue = parseFloat(item));
-    //   }
-    //   if (this.operations.has(item)) {
-    //     return (currentOperations = item);
-    //   }
-    //   calculatedValue = this.calculation(
-    //     currentOperations,
-    //     calculatedValue,
-    //     parseFloat(item)
-    //   );
-    // });
+    console.log("here", this.newWay2(cleanInput));
 
     return newData[0];
   }
